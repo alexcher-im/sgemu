@@ -1,0 +1,10 @@
+audioread==2.1.9
+freetype-py==2.2.0
+glfw==2.0.0
+numpy==1.18.5
+Pillow==8.0.1
+pyassimp==4.1.4
+PyGLM==1.1.8
+PyOpenAL==0.7.11a1
+PyOpenGL==3.1.5
+PyOpenGL-accelerate==3.1.5
