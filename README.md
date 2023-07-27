@@ -28,7 +28,7 @@ To fix you need to find class `String`, field `length` (file `structs.py`, line 
 
 `arrow up` and `arrow down` to move up and down
 
-`shift`, `ctrl`, `ctrl+shift` to increase moving speed by 10, 100 and 1000 respectively
+`shift`, `ctrl`, `ctrl+shift` to increase moving or DOF cutoff change speed by 10, 100 and 1000 respectively
 
 `Q` and `R` to roll the camera
 

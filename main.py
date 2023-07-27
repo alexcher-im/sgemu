@@ -95,9 +95,9 @@ def key_array_callback(keys, dt):
     if keys[GLFW_KEY_Q]:
         cam.add_angles(roll=dt)
     if keys[GLFW_KEY_T]:
-        lens_blur.set_near_cut(lens_blur.near_cut - 0.001 * dt)
+        lens_blur.set_near_cut(lens_blur.near_cut - 0.001 * speed)
     if keys[GLFW_KEY_Y]:
-        lens_blur.set_near_cut(lens_blur.near_cut + 0.001 * dt)
+        lens_blur.set_near_cut(lens_blur.near_cut + 0.001 * speed)
 
     if __debug__:
         print('camera at', tuple(cam.pos), 'facing', tuple(cam.direction), 'with fov', cam.components[0].fov)
