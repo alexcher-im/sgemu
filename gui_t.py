@@ -1,14 +1,16 @@
 from timeit import default_timer as timer
 
-from glm import vec4
+from glm import ivec2, vec4
 
 from engine.gl import Window, glfwSwapBuffers, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, GLFW_RELEASE, glGetIntegerv, \
     GL_MAX_UNIFORM_BLOCK_SIZE, GL_MAX_VERTEX_UNIFORM_VECTORS
 from engine.gui.adaptive import AlignModes, ResizeModes
-from engine.gui.base import BaseElement, cvec
+from engine.gui.base import BaseElement
+from engine.gui.elements.border_radius import RoundedRect
 from engine.gui.elements.image import ImageElement
 from engine.gui.elements.text import TextElement
 from engine.gui.renderer import UIRenderer
+from engine.gui.widgets.checkbox import SgCheckbox
 from engine.lib.text_renderer import LineAlignmentMode
 
 python_man = open('python_man.txt').read()
@@ -48,7 +50,7 @@ def apple_on_leave(elem, *_):
 
 
 def window_mouse_move_event(_, x, y):
-    root.event_manager.on_mouse_move_event(cvec(x, y))
+    root.event_manager.on_mouse_move_event(ivec2(x, y))
 
 
 def window_mouse_button_event(_, button, action, mods):

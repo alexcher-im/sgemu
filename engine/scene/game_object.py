@@ -90,9 +90,9 @@ class GameObject:
 
 
 class DirectedGameObject(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, direction = None, **kwargs):
         self._angles = vec3(0)
-        self._direction = vec3(0.0, 0.0, 1.0)
+        self._direction = vec3(0.0, 0.0, 1.0) if direction == None else direction
         super(DirectedGameObject, self).__init__(*args, **kwargs)
         self.angles = (pi, 0, 0)
 

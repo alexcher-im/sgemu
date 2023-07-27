@@ -11,6 +11,7 @@ class RenderComponent(Component):
     def __init__(self, game_object=None, model: Union[UnfinishedModel, Model] = None, renderer: RenderChain = None):
         super(RenderComponent, self).__init__(game_object)
         if isinstance(model, UnfinishedModel):
+            print('attrib data', renderer.attribute_data)
             model = model.format(renderer.attribute_data, renderer.sampler_data)
         self.model = model
         self.transform = TransformationProcessor(self)

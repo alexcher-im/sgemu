@@ -1,4 +1,4 @@
-from glm import vec3, radians
+from glm import vec3, radians, normalize
 
 from ..component import Component, ComponentUpdateEvent
 from ...event.base import MainEventManager
@@ -47,7 +47,7 @@ class SpotLightComponent(LightComponent):
         super(SpotLightComponent, self).__init__(game_object, *args, **kwargs)
         self._cut_off = radians(cut_off)
         self._outer_cut_off = radians(outer_cut_off)
-        self._direction = direction
+        self._direction = normalize(vec3(direction))
 
     @property
     def cut_off(self):
@@ -77,4 +77,45 @@ class SpotLightComponent(LightComponent):
     def direction(self, value):
         if self._direction != value:
             self._direction = vec3(value)
+            self.update()
+
+
+class AreaLightComponent(Component):
+    def __init__(self, game_object=None, color=(1, 1, 1), intensity=1, points=(vec3(0, 0, 0),
+                                                                               vec3(1, 0, 0),
+                                                                               vec3(0, 0, 1),
+                                                                               vec3(1, 0, 1))):
+        super().__init__(game_object)
+        self._color = vec3(color)
+        self._intensity = intensity
+        self._points = points
+
+    @property
+    def intensity(self):
+        return self._intensity
+
+    @intensity.setter
+    def intensity(self, value):
+        if self._intensity != value:
+            self._intensity = float(value)
+            self.update()
+
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, value):
+        if self._color != value:
+            self._color = vec3(value)
+            self.update()
+
+    @property
+    def points(self):
+        return self._points
+
+    @points.setter
+    def points(self, value):
+        if self._points != value:
+            self._points = tuple(vec3(pos) for pos in value)
             self.update()

@@ -41,7 +41,7 @@ class Queue:
 
         if not self.source.is_playing():
             # resuming track if suddenly stopped
-            if self.source.get_queued_buffers_count():
+            if not self.source.get_queued_buffers_count():
                 self.source.play()
             # clearing queue from source
             else:

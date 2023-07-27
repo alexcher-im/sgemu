@@ -34,8 +34,8 @@ class CurrentDependence(BaseRendererDependence):
         # note: numpy matrix multiplication differs from glm. multiplication order is reversed
         if isinstance(event, NodeDrawEvent):
             self.model_matrix[:] = event.node.result_matrix
-            if np.array_equal(self.model_matrix, self._old_model_matrix):
-                return
+            #if np.array_equal(self.model_matrix, self._old_model_matrix):
+            #    return
             self._old_model_matrix[:] = self.model_matrix
             # np.matmul(self.model_matrix, self.view_projection_matrix, out=self.model_view_projection_matrix)
             self.model_view_projection_matrix[:] = self.model_matrix @ self.view_projection_matrix

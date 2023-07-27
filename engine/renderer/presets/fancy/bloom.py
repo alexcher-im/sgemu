@@ -23,7 +23,7 @@ uniform float limit;
 
 void main() {
     vec4 curr_texel = texture(tex_img, tex_coords);
-    if (dot(curr_texel.xyz, vec3(1)) > limit) out_color = curr_texel;
+    if (dot(curr_texel.xyz, vec3(1)) > limit) out_color = max(curr_texel - limit, vec4(0));
     else out_color = vec4(vec3(0), 1); 
 }
 '''
@@ -80,7 +80,7 @@ void main() {
 
 class Bloom(SecondPassRenderer):
     def __init__(self, width, height, color_buffer_type=1, additional_post_effects=(), blur_points=51, num_passes=1,
-                 brightness=0.1, light_limit=1):
+                 mix_cf=0.1, light_limit=1):
         super(Bloom, self).__init__()
 
         self.extract_pass = LightExtractorRenderer(width, height, color_buffer_type)
@@ -89,7 +89,7 @@ class Bloom(SecondPassRenderer):
                                               additional_post_effects)
 
         self.merge_pass.shader_prog.use()
-        self.merge_pass.set_effect_value('brightness', brightness)
+        self.merge_pass.set_effect_value('brightness', mix_cf)
         self.extract_pass.shader_prog.use()
         self.extract_pass.brightness_limit_setter(light_limit)
 

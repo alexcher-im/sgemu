@@ -78,6 +78,14 @@ class Texture2D(BaseTexture):
         obj.load_from_file(filename, *args, **kwargs)
         return obj
 
+    @classmethod
+    def tex_from_binary_file(cls, filename, width, height, pixel_format, use=True, block_id=0,
+                             anisotropic_levels=0, interpolation='mipmap', border='repeat', *args, **kwargs):
+        obj = cls(use=use, block_id=block_id, anisotropic_levels=anisotropic_levels,
+                  interpolation=interpolation, border=border)
+        obj.load_from_binary_file(filename, width, height, pixel_format, *args, **kwargs)
+        return obj
+
     def __init__(self, use=True, block_id=0, anisotropic_levels=0, interpolation='mipmap', border='repeat'):
         super(Texture2D, self).__init__(use, block_id, anisotropic_levels, interpolation, border)
         self.width = 0
@@ -85,7 +93,8 @@ class Texture2D(BaseTexture):
 
     def set_border(self, value):
         if isinstance(value, str):
-            value = {'clamp': GL_CLAMP_TO_BORDER, 'repeat': GL_REPEAT, 'mirror': GL_MIRRORED_REPEAT}[value]
+            value = {'clamp': GL_CLAMP_TO_BORDER, 'repeat': GL_REPEAT,
+                     'mirror': GL_MIRRORED_REPEAT, 'edge': GL_CLAMP_TO_EDGE}[value]
         glTexParameteri(self.BIND_POINT, GL_TEXTURE_WRAP_S, value)
         glTexParameteri(self.BIND_POINT, GL_TEXTURE_WRAP_T, value)
 
@@ -103,6 +112,13 @@ class Texture2D(BaseTexture):
         self.load_from_bytes(img.tobytes('raw', pil_type, 0, -1),
                              dst_gl_type, src_gl_type, width, height, mipmap)
         return width, height
+
+    def load_from_binary_file(self, filename, width, height, pixel_format, tex_data_type=None,
+                              data_type=GL_UNSIGNED_BYTE, mipmap=False):
+        tex_data_type = tex_data_type or pixel_format
+        im_bytes = open(filename, 'rb').read()
+        self.use()
+        self.load_from_bytes(im_bytes, tex_data_type, pixel_format, width, height, mipmap, data_type)
 
     def load_from_bytes(self, byte_data, internal_type, data_format, width, height, mipmap=False,
                         data_type=GL_UNSIGNED_BYTE):

@@ -44,6 +44,7 @@ class BaseRenderer(RenderStage):
 
     def draw(self, out_fbo, data) -> int:
         out_fbo.use()
+        out_fbo.clear()
         self.shader_prog.use()
         i = 0
         for i, elem in enumerate(data):
@@ -59,8 +60,8 @@ class SecondPassRenderer(BaseRenderer):
     # todo remove this article
     """
     Previous stage has drawn into this renderer FBO and this renderer draws to fbo of next stage.
-    Warning: when you override this class don't forget that current function clears this renderer
-     FBO so it can decrease speed, may be you would like to call BaseRenderer.draw(self, data, out_fbo)
+    //Warning: when you override this class don't forget that current function clears this renderer
+    // FBO, so it can decrease speed, may be you would like to call BaseRenderer.draw(self, data, out_fbo)
 
     `data` argument can be easily replaced with `self.meshes`, but due to compatibility issues
      function accepts 2 arguments

@@ -7,7 +7,7 @@ from collections import namedtuple
 
 from .np_helper import map_ct_pointer
 
-USE_C_LOADER = True  # c loader is now deprecated todo remove assimp c loader
+USE_C_LOADER = False  # c loader is now deprecated todo remove assimp c loader
 
 c_loader = None
 try:
@@ -158,7 +158,6 @@ def get_material_property(ai_mat, prop_name, semantic=0):
     for prop_id in range(ai_mat.mNumProperties):
         prop = ai_mat.mProperties[prop_id].contents
         if prop.mKey.data[1:].decode() == prop_name and prop.mSemantic == semantic:
-            print('kek found!')
             return read_data_by_pointer(prop.mData, prop.mDataLength)
     return None
 

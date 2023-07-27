@@ -11,7 +11,6 @@ from ..lib.assimp import load_scene, free_scene, get_material_texture, retrieve_
 def load_model(filename):
     obj_dir = split(filename)[0]
     assimp_scene = load_scene(filename)
-    print('model load: %s, %d:%d' % (filename, len(assimp_scene.meshes), len(assimp_scene.materials)))
     model = UnfinishedModel(assimp_scene.meshes, assimp_scene.materials, assimp_scene.root_node,
                             process_mesh, process_material, process_node, lambda obj: free_scene(obj.scene_src))
     model.obj_dir = obj_dir

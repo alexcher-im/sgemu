@@ -8,7 +8,8 @@ from ..deferred import GBuffer4Float, GBuffer3Int, GBuffer3Float16, GBuffer3UInt
 
 class LightPass(SecondPassRenderer):
     # language=GLSL
-    _vert_shader = '''#version 430 core
+    _vert_shader = '''\
+#version 430 core
 
 layout (location = 0) in vec2 a_pos;
 layout (location = 1) in vec2 a_uv;
@@ -20,6 +21,7 @@ void main() {
     uv = a_uv;
 }
 '''
+
     # language=GLSL
     _frag_shader = '''\
 #version 430 core
@@ -71,11 +73,26 @@ layout(std140, binding = 0) buffer SpotLightStorage
 } ssbo_data;
 
 
+float sigmoid(float x) {
+    return (cos((x - 1) * pi) + 1) / 2;
+}
+
+
 float calcFogIntensity() {
     // linear intensity
     float x = 1 - clamp((length(frag_pos - camera_pos) - fog.z_far) / (fog.start - fog.z_far), 0, 1);
     // sigmoid intensity
-    return (cos((x - 1) * pi) + 1) / 2;
+    return sigmoid(x);
+}
+
+float spotlight_interp(float x) {
+    float lin_part = (x * 1.52753) - 0.527525;
+    float quad_part = 1 - sqrt(1 - pow(x / sqrt(2), 2.0));
+    if (x <= 1)
+        return quad_part / 0.2928932188134524755991556378951509607151640623115259634116601310;
+    else 
+        return lin_part;
+    //return mix(lin_part, quad_part, (x >= 0.4));
 }
 
 
@@ -111,8 +128,9 @@ void main() {
 
         // for spotlight
         float theta = dot(light_dir, -light.direction);
-        float eps = light.cut_off - light.outer_cut_off;
-        float intensity = clamp((theta - light.outer_cut_off) / eps, 0, 1);
+        float eps = (light.cut_off - light.outer_cut_off) / 0.7310585786300048792511592418218362743651446401650565192763659079;
+        float intensity = spotlight_interp(1 / (1 + exp(-(theta - light.outer_cut_off) / eps + 1)));
+        intensity = clamp(intensity, 0, 1);
         //if (intensity <= 0.0) continue;
 
         // diffuse
@@ -135,6 +153,7 @@ void main() {
     out_color = vec4(result, 1);
 }
 '''
+
     _buffers_ldr = (GBuffer4Float,  # positions + shininess
                     GBuffer3Int,    # normals
                     GBuffer3UInt)   # diffuse + specular
@@ -146,10 +165,10 @@ void main() {
     def __init__(self, width, height, hdr_gbuffer=False):
         super(LightPass, self).__init__()
 
-        self.fbo = FrameBuffer(width, height, self._buffers_hdr if hdr_gbuffer else self._buffers_ldr, FB_NONE)
+        self.fbo = FrameBuffer(width, height, (self._buffers_ldr, self._buffers_hdr)[hdr_gbuffer], FB_NONE)
 
         self._make_shader()
-        self.meshes = ()  # wil be set in on_created_uniformed()
+        self.meshes = ()  # will be set in on_created_uniformed()
 
     def on_created_uniformed(self, uniformed):
         arr_data = [(buf, uniformed.sampler_data[name].bind_index)
@@ -161,4 +180,4 @@ void main() {
 
     def draw(self, out_fbo, data):
         super(LightPass, self).draw(out_fbo, data)
-        self.fbo.clear()
+        #self.fbo.clear()

@@ -65,13 +65,35 @@ class EffectSupporter(SecondPassRenderer):
 class GammaCorrectionEffect(BaseEffect):
     elements = (
         Uniform('rev_gamma', 'float', 2.2, UniformHandler('gamma', '1f', lambda gamma: 1 / gamma)),
-        Code('out_color = pow(out_color, vec4(vec3(rev_gamma), 1));', 'out_color')
+        Code('vec3 lin_part = out_color.xyz * 12.92;'
+             'vec3 quad_part = pow(out_color.xyz * 1.055, vec3(1/2.4)) - 0.055;'
+             'out_color.xyz = mix(lin_part, quad_part, greaterThan(out_color.xyz, vec3(0.0031308)));'
+             #'out_color = pow(out_color, vec4(vec3(rev_gamma), 1));'
+             '', 'out_color')
     )
 
 
 class ReinhardToneMappingEffect(BaseEffect):
     elements = (
-        Code('out_color.xyz = out_color.xyz / (out_color.xyz + 1);', 'out_color'),
+        Code('out_color.xyz = abs(out_color.xyz) / (out_color.xyz + 1);', 'out_color'),
+    )
+
+
+class LuminanceBasedReinhardToneMappingEffect(BaseEffect):
+    elements = (
+        Code(#'float curr_luminance = max(max(out_color.x, max(out_color.y, out_color.z)), 0);'
+             'float curr_luminance = dot(abs(out_color.xyz), vec3(0.2126, 0.7152, 0.0722));'
+             'float scale_factor = 1 / (curr_luminance + 1);'
+             'out_color.xyz *= scale_factor;', 'out_color'),
+    )
+
+
+class FilmicToneMappingEffect(BaseEffect):
+    elements = (
+        Code(#'float curr_luminance = max(max(out_color.x, max(out_color.y, out_color.z)), 0);'
+             'vec3 X = max(vec3(0.0), out_color.xyz - 0.004);'
+             'vec3 result = (X * (6.2 * X + 0.5)) / (X * (6.2 * X + 1.7) + 0.06);'
+             'out_color.xyz = pow(result, vec3(2.2));', 'out_color'),
     )
 
 

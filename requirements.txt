@@ -1,6 +1,6 @@
 audioread==2.1.9
 freetype-py==2.2.0
-glfw==2.0.0
+glfw==2.5.9
 numpy==1.18.5
 Pillow==8.0.1
 pyassimp==4.1.4

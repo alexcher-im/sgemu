@@ -30,7 +30,7 @@ class Scene(BaseEventReceiver):
 
         self.renderer_dependencies = {}
         self._cached_render_components = []
-        self.static_data = {'camera_pos': None}
+        self.static_data = {'camera_pos': None, 'camera_dir': None}
         self.event_manager = MainEventManager
 
     def set_active_camera(self, obj):
@@ -59,6 +59,7 @@ class Scene(BaseEventReceiver):
 
     def on_tick(self):
         self.static_data['camera_pos'] = self.active_camera.game_object.abs_pos
+        self.static_data['camera_dir'] = self.active_camera.game_object.direction
 
     def on_event(self, evt):
         if isinstance(evt, ComponentAddEvent):

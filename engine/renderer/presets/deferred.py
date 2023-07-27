@@ -46,6 +46,12 @@ class GBuffer4Float16(GBuffer):
     TEX_DATA_TYPE = GL_FLOAT
 
 
+class GBuffer4Float32(GBuffer):
+    TEX_INTERNAL_TYPE = GL_RGBA32F
+    TEX_TYPE = GL_RGBA
+    TEX_DATA_TYPE = GL_FLOAT
+
+
 class GBuffer3UInt(GBuffer):
     pass
 
